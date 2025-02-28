@@ -1,11 +1,11 @@
 # syntax=docker/dockerfile:1.5
 # this is here so we can grab the latest version of kind and have dependabot keep it up to date
-FROM kindest/node:v1.32.0@sha256:c48c62eac5da28cdadcf560d1d8616cfa6783b58f0d94cf63ad1bf49600cb027
+FROM kindest/node:v1.32.2@sha256:f226345927d7e348497136874b6d207e0b32cc52154ad8323129352923a3142f
 
 # this is here so we can grab the latest version of skopeo and have dependabot keep it up to date
 FROM quay.io/skopeo/stable:v1.17.0
 
-FROM python:3.13@sha256:d57ec66c94b9497b9f3c66f6cdddc1e4e0bad4c584397e0b57a721baef0e6fdc
+FROM python:3.13@sha256:08471c63c5fdf2644adc142a7fa8d0290eb405cda14c473fbe5b4cd0933af601
 
 RUN apt-get update \
 	&& apt-get install -y curl git \
@@ -15,6 +15,7 @@ WORKDIR /workspace/tests
 
 COPY --link tests/requirements.txt /workspace/tests/
 RUN pip install --require-hashes -r requirements.txt --no-deps
+RUN playwright install --with-deps chromium
 
 COPY --link deployments /workspace/deployments
 COPY --link config /workspace/config
